@@ -1,0 +1,3 @@
+include ':app:CashPay'
+include ':app'
+rootProject.name = "CashPay"
