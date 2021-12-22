@@ -7,14 +7,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultCaller;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import static com.tamkeen.cashpay.CashPayBuilder.CASHPAY_REQUEST_CODE;
 
-public final class CashPay {
+public final class CashPay  {
 
     public static final String CASHPAY_URL = "cash://cashy.page.link";
     private CashPay() {
         // no instance
     }
+
 
     public static CashPayBuilder init(Activity activity) {
 
@@ -22,6 +32,7 @@ public final class CashPay {
     }
 
     public static CashPayBuilder Scan(Intent data,Activity activity) {
+
         new AlertDialog.Builder(activity)
                 .setTitle("")
                 .setMessage(data.getExtras().getString("data"))
@@ -42,12 +53,19 @@ public final class CashPay {
     }
 
     static void build(CashPayBuilder CashPayBuilder) {
-
+         final BetterActivityResult<Intent, ActivityResult> activityLauncher = BetterActivityResult.registerActivityForResult((ActivityResultCaller) CashPayBuilder.getActivity());
         Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(CASHPAY_URL));
         intent.putExtra("inputPhone",CashPayBuilder.getShortcode());
         intent.putExtra("inputAmount",CashPayBuilder.getAmount());
         intent.putExtra("edNote",CashPayBuilder.getEdNote());
+        activityLauncher.launch(intent, result -> {
+            if (result.getResultCode() ==CASHPAY_REQUEST_CODE) {
+                // There are no request codes
+                Intent data = result.getData();
+                System.out.println(result.getData());
 
-        CashPayBuilder.getActivity().startActivityForResult(intent,CASHPAY_REQUEST_CODE);
+            }
+        });
+
     }
 }
