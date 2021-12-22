@@ -58,12 +58,15 @@ public final class CashPay  {
         intent.putExtra("inputPhone",CashPayBuilder.getShortcode());
         intent.putExtra("inputAmount",CashPayBuilder.getAmount());
         intent.putExtra("edNote",CashPayBuilder.getEdNote());
-        activityLauncher.launch(intent, result -> {
-            if (result.getResultCode() ==CASHPAY_REQUEST_CODE) {
-                // There are no request codes
-                Intent data = result.getData();
-                System.out.println(result.getData());
+        activityLauncher.launch(intent, new BetterActivityResult.OnActivityResult<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == CASHPAY_REQUEST_CODE) {
+                    // There are no request codes
+                    Intent data = result.getData();
+                    System.out.println(result.getData());
 
+                }
             }
         });
 
